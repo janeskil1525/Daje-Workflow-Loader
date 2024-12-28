@@ -6,7 +6,8 @@
       "state": {
         "pre_checks": [
           {
-            "check": ""
+            "check": "mandatory",
+            "fields": "sql_path,perl_path"
           }
         ],
         "activities": [

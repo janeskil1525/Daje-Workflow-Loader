@@ -6,9 +6,7 @@ use Mojo::Base -base, -signatures;
 # NAME
 # ====
 #
-# Daje::Workflow::Loader - It's loader for
-#
-# Daje-Workflow JSON based workflows
+# Daje::Workflow::Loader - It's loader for Daje-Workflow JSON based workflows
 #
 #
 # SYNOPSIS
