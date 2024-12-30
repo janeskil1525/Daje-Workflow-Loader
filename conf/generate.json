@@ -6,7 +6,8 @@
       "state": {
         "pre_checks": [
           {
-            "check": "mandatory",
+            "name":"Mandatory fields",
+            "class": "Daje::Workflow::Checks::Mandatory",
             "fields": "sql_path,perl_path"
           }
         ],
