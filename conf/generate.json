@@ -8,7 +8,7 @@
           {
             "name":"Mandatory fields",
             "class": "Daje::Workflow::Checks::Mandatory",
-            "fields": "sql_path,perl_path"
+            "checks": "sql_path,perl_path"
           }
         ],
         "activities": [
