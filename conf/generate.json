@@ -8,13 +8,14 @@
           {
             "name":"Mandatory fields",
             "class": "Daje::Workflow::Checks::Mandatory",
-            "checks": "sql_path,perl_path"
+            "checks": "sql_path, perl_path"
           }
         ],
         "activities": [
           {
             "name": "sql",
-            "activity": "Daje::Plugin::GenerateSQL"
+            "activity": "Daje::Plugin::GenerateSQL",
+            "method": "genereate"
           }
         ],
         "post_checks": [
