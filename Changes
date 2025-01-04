@@ -1,6 +1,6 @@
-Revision history for Perl extension Daje-Workflow-Init
+Revision history for Perl extension Daje-Workflow-Loader
 
 {{$NEXT}}
 
-    - Bug fix checks and activities
+    - Changed to use Daje::Config
 
