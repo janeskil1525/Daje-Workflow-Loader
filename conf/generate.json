@@ -13,9 +13,9 @@
         ],
         "activities": [
           {
-            "name": "sql",
-            "activity": "Daje::Plugin::GenerateSQL",
-            "method": "genereate"
+            "name": "changed_files",
+            "activity": "Daje::Workflow::FileChanged::Activity",
+            "method": "changed_files"
           }
         ],
         "post_checks": [
