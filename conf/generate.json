@@ -15,7 +15,8 @@
           {
             "name": "changed_files",
             "activity": "Daje::Workflow::FileChanged::Activity",
-            "method": "changed_files"
+            "method": "changed_files",
+            "resulting_state": ""
           }
         ],
         "post_checks": [
