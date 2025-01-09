@@ -102,6 +102,11 @@ sub get_next_state($self, $workflow, $state_name) {
     return $state->{next_state};
 }
 
+sub get_state_observers($self, $workflow, $state_name) {
+    my $state = $self->get_state($workflow, $state_name);
+    return $state->{state}->{observers};
+}
+
 sub get_activity($self, $workflow, $state_name, $activity_name) {
     my $activity;
     my $activities = $self->get_state($workflow, $state_name)->{state}->{activities};

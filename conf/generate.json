@@ -16,13 +16,17 @@
             "name": "changed_files",
             "activity": "Daje::Workflow::FileChanged::Activity",
             "method": "changed_files",
-            "resulting_state": ""
+            "resulting_state": "",
+            "pre_checks": [],
+            "post_checks":[],
+            "observers": []
           }
         ],
         "post_checks": [
-          {
-            "check": ""
-          }
+
+        ],
+        "observers": [
+
         ]
       },
       "next_state": "generatePerl"
