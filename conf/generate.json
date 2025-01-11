@@ -16,7 +16,7 @@
             "name": "changed_files",
             "activity": "Daje::Workflow::FileChanged::Activity",
             "method": "changed_files",
-            "resulting_state": "",
+            "resulting_state": "generateSql",
             "pre_checks": [],
             "post_checks":[],
             "observers": []
@@ -28,11 +28,10 @@
         "observers": [
 
         ]
-      },
-      "next_state": "generatePerl"
+      }
     },
     {
-      "name": "generatePerl",
+      "name": "generateSql",
       "auto": 1,
       "state": {
 
@@ -43,8 +42,19 @@
         ],
         "activities": [
           {
-            "name": "perl",
-            "activity": "Daje::Plugin::GeneratePerl"
+            "name": "Generate SQL",
+            "activity": "Daje::Workflow::GenerateSQL::Activity",
+            "activity_data": {
+              "template" : {
+                "data_sections": "table,foreign_key,index,section,file",
+                "source": "Daje::Generate::Templates::Sql"
+              }
+            },
+            "method": "changed_files",
+            "resulting_state": "",
+            "pre_checks": [],
+            "post_checks":[],
+            "observers": []
           }
         ],
         "post_checks": [

@@ -54,7 +54,7 @@ use Daje::Config;
 has 'workflow';
 has 'path';
 
-our $VERSION = "0.05";
+our $VERSION = "0.06";
 
 # Load the data into the object
 sub load($self) {
@@ -121,6 +121,7 @@ sub get_activity($self, $workflow, $state_name, $activity_name) {
 
 1;
 __END__
+
 
 
 
@@ -199,6 +200,10 @@ L<Mojo::Base>
 =head2 get_state($self,
 
  get_state($self,();
+
+=head2 get_state_observers($self,
+
+ get_state_observers($self,();
 
 =head2 get_workflow($self,
 
