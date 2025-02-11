@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use warnings;
-use Test::More;
+use warnings FATAL => 'all';
 
 use Daje::Workflow::Loader;
 
@@ -11,11 +10,9 @@ sub test_load() {
     );
 
     $loader->load();
+    print $loader->error() .'\n';
 
     return 1;
 }
 
-ok(test_load() == 1);
-
-done_testing();
-
+test_load();

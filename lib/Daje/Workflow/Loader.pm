@@ -49,76 +49,48 @@ use Mojo::Base -base, -signatures;
 # janeskil1525 E<lt>janeskil1525@gmail.comE<gt>
 #
 
-use Daje::Config;
+use Daje::Workflow::Roadmap::Load;;
+use Daje::Workflow::Details::Analyser;
 
-has 'workflow';
 has 'path';
+has 'error';
+has 'has_error' => 0;
+has 'loader';
 
-our $VERSION = "0.07";
+our $VERSION = "0.08";
 
 # Load the data into the object
 sub load($self) {
-    my $workflow = Daje::Config->new(
-        path => $self->path,
-        type => 'workflow',
-    )->load();
+    eval {
+        my $loader = Daje::Workflow::Roadmap::Load->new(
+            type => 'workflow',
+            path => $self->path(),
+        );
+        $loader->load();
+        $self->loader($loader);
+    };
+    $self->add_error($@) if $@;
 
-    $self->workflow($workflow);
+    if($self->has_error() == 0) {
+        eval {
+            my $analyzer = Daje::Workflow::Details::Analyser->new(
+                loader => $self->loader()
+            )->analyze();
+        }
+    }
+    $self->add_error($@) if $@;
 
     return 1;
 }
 
-# Get the entire workflow as a hashref
-sub get_workflow($self, $workflow) {
-    return $self->workflow()->{workflow};
+sub add_error($self, $error =  "") {
+    return 1 unless length($error) > 0;
+
+    my $err = $self->error();
+    $err = "" unless $err;
+    $self->error($err . ' ' . $error);
+    $self->has_error(0);
 }
-
-#
-sub get_state($self, $workflow, $state_name) {
-    my $flow = $self->workflow->{$workflow};
-    my $length = scalar @{$flow};
-    my $state;
-    for (my $i = 0; $i < $length; $i++) {
-        if (@{$flow}[$i]->{name} eq $state_name) {
-            $state = @{$flow}[$i];
-        }
-    }
-
-    return $state;
-}
-
-sub get_pre_checks($self, $workflow, $state_name) {
-    my $state = $self->get_state($workflow, $state_name);
-    return $state->{state}->{pre_checks};
-}
-
-sub get_post_checks($self, $workflow, $state_name) {
-    my $state = $self->get_state($workflow, $state_name);
-    return $state->{state}->{post_checks};
-}
-
-sub get_next_state($self, $workflow, $state_name) {
-    my $state = $self->get_state($workflow, $state_name);
-    return $state->{next_state};
-}
-
-sub get_state_observers($self, $workflow, $state_name) {
-    my $state = $self->get_state($workflow, $state_name);
-    return $state->{state}->{observers};
-}
-
-sub get_activity($self, $workflow, $state_name, $activity_name) {
-    my $activity;
-    my $activities = $self->get_state($workflow, $state_name)->{state}->{activities};
-    my $length = scalar @{$activities};
-    for (my $i = 0; $i < $length; $i++) {
-        if (@{$activities}[$i]->{name} eq $activity_name) {
-            $activity = @{$activities}[$i];
-        }
-    }
-    return $activity;
-}
-
 1;
 __END__
 
