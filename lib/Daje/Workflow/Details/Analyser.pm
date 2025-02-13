@@ -8,15 +8,15 @@ has 'workflows';
 has 'activities';
 has 'states';
 has 'loader';
-has 'endpoints';
+has 'activity_paths';
 
 sub analyze($self) {
 
-    $self->_endpoints();
+    $self->_activity_paths();
 
 }
 
-sub _endpoints($self) {
+sub _activity_paths($self) {
     my $endpoints;
     my $workflow = $self->loader()->workflow();
     for (my ($wfl_key, $wfl_val) = each(%{$workflow})) {
@@ -33,7 +33,7 @@ sub _endpoints($self) {
         }
         my $test = 1;
     }
-    $self->endpoints($endpoints);
+    $self->activity_paths($endpoints);
 }
 
 1;

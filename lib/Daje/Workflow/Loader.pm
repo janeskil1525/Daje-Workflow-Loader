@@ -56,11 +56,49 @@ has 'path';
 has 'error';
 has 'has_error' => 0;
 has 'loader';
+has 'analyser';
+has 'routes';
 
-our $VERSION = "0.08";
+our $VERSION = "0.09";
 
 # Load the data into the object
 sub load($self) {
+
+    $self->_load();
+    if($self->has_error() == 0) {
+       $self->_analyser();
+    }
+    if($self->has_error() == 0) {
+        $self->_routes();
+    }
+
+    return 1;
+}
+
+sub _routes($self) {
+
+    eval {
+        my $routes = Daje::Workflow::Details::Routes->new(
+            analyser => $self->analyser(),
+        );
+        $routes->router();
+        $self->routes($routes);
+    };
+    $self->add_error($@) if $@;
+}
+
+sub _analyser($self) {
+    eval {
+        my $analyzer = Daje::Workflow::Details::Analyser->new(
+            loader => $self->loader()
+        );
+        $analyzer->analyze();
+        $self->analyser($analyzer);
+    };
+    $self->add_error($@) if $@;
+}
+
+sub _load($self) {
     eval {
         my $loader = Daje::Workflow::Roadmap::Load->new(
             type => 'workflow',
@@ -70,17 +108,6 @@ sub load($self) {
         $self->loader($loader);
     };
     $self->add_error($@) if $@;
-
-    if($self->has_error() == 0) {
-        eval {
-            my $analyzer = Daje::Workflow::Details::Analyser->new(
-                loader => $self->loader()
-            )->analyze();
-        }
-    }
-    $self->add_error($@) if $@;
-
-    return 1;
 }
 
 sub add_error($self, $error =  "") {

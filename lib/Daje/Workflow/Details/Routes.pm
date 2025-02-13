@@ -1,5 +1,10 @@
 package Daje::Workflow::Details::Routes;
-use strict;
-use warnings FATAL => 'all';
+use Mojo::Base -base, -signatures;
 
+has 'analyser';
+has 'routes';
+
+sub router($self) {
+
+}
 1;
