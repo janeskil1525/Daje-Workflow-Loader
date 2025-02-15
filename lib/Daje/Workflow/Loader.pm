@@ -1,7 +1,5 @@
-package Daje::Workflow::Loader;
-use Mojo::Base -base, -signatures;
-
-
+use v5.40;
+use experimental 'class';
 
 # NAME
 # ====
@@ -15,7 +13,8 @@ use Mojo::Base -base, -signatures;
 #    use Daje::Workflow::Loader;
 #
 #    my $workflows = Daje::Workflow::Loader->new(
-#         path => 'path
+#         path => $path,
+#         type => 'workflow',
 #    )->load();
 #
 #    my $workflow = $workflows->get_workflow('workflow');
@@ -49,77 +48,67 @@ use Mojo::Base -base, -signatures;
 # janeskil1525 E<lt>janeskil1525@gmail.comE<gt>
 #
 
-use Daje::Workflow::Roadmap::Load;;
-use Daje::Workflow::Details::Analyser;
+class Daje::Workflow::Loader {
 
-has 'path';
-has 'error';
-has 'has_error' => 0;
-has 'loader';
-has 'analyser';
-has 'routes';
+    field $path :param;
+    field $type :param :reader;
+    field $error :reader;
+    field $has_error :reader = 0;
+    field $loader :reader;
+    field $analyser :reader;
 
-our $VERSION = "0.09";
+    use Daje::Workflow::Roadmap::Load;;
+    use Daje::Workflow::Details::Analyser;
+
+    our $VERSION = "0.13";
+
+    method load() {
+
+        $self->_load();
+        if($has_error == 0) {
+            $self->_analyser();
+        }
+        return 1;
+    }
+
+    method _analyser() {
+        eval {
+            $analyser = Daje::Workflow::Details::Analyser->new(
+                loader => $loader,
+            );
+            $analyser->analyze();
+        };
+        $self->add_error($@) if $@;
+    }
+
+    method _load() {
+        eval {
+            $loader = Daje::Workflow::Roadmap::Load->new(
+                type => $type,
+                path => $path,
+            );
+            $loader->load();
+        };
+        $self->add_error($@) if $@;
+    }
+
+    method add_error( $new_error =  "") {
+        return 1 unless length($new_error) > 0;
+
+        my $err = $error;
+        $err = "" unless $err;
+        $error = $err . ' ' . $new_error;
+        $has_error = 1;
+    }
+}
 
 # Load the data into the object
-sub load($self) {
 
-    $self->_load();
-    if($self->has_error() == 0) {
-       $self->_analyser();
-    }
-    if($self->has_error() == 0) {
-        $self->_routes();
-    }
-
-    return 1;
-}
-
-sub _routes($self) {
-
-    eval {
-        my $routes = Daje::Workflow::Details::Routes->new(
-            analyser => $self->analyser(),
-        );
-        $routes->router();
-        $self->routes($routes);
-    };
-    $self->add_error($@) if $@;
-}
-
-sub _analyser($self) {
-    eval {
-        my $analyzer = Daje::Workflow::Details::Analyser->new(
-            loader => $self->loader()
-        );
-        $analyzer->analyze();
-        $self->analyser($analyzer);
-    };
-    $self->add_error($@) if $@;
-}
-
-sub _load($self) {
-    eval {
-        my $loader = Daje::Workflow::Roadmap::Load->new(
-            type => 'workflow',
-            path => $self->path(),
-        );
-        $loader->load();
-        $self->loader($loader);
-    };
-    $self->add_error($@) if $@;
-}
-
-sub add_error($self, $error =  "") {
-    return 1 unless length($error) > 0;
-
-    my $err = $self->error();
-    $err = "" unless $err;
-    $self->error($err . ' ' . $error);
-    $self->has_error(0);
-}
 1;
 __END__
+
+
+
 
 
 
@@ -147,7 +136,8 @@ Daje::Workflow::Loader - Just loads Daje-Workflow JSON based workflows
    use Daje::Workflow::Loader;
 
    my $workflows = Daje::Workflow::Loader->new(
-        path => 'path
+        path => $path,
+        type => 'workflow',
    )->load();
 
    my $workflow = $workflows->get_workflow('workflow');
@@ -173,50 +163,18 @@ the Daje-Workflow engine
 
 =head1 REQUIRES
 
-L<Daje::Config> 
+L<Daje::Workflow::Loader> 
 
-L<Mojo::Base> 
+L<Daje::Workflow::Details::Analyser> 
+
+L<Daje::Workflow::Roadmap::Load> 
+
+L<experimental> 
+
+L<v5.40> 
 
 
 =head1 METHODS
-
-=head2 get_activity($self,
-
- get_activity($self,();
-
-=head2 get_next_state($self,
-
- get_next_state($self,();
-
-=head2 get_post_checks($self,
-
- get_post_checks($self,();
-
-=head2 get_pre_checks($self,
-
- get_pre_checks($self,();
-
-=head2 get_state($self,
-
- get_state($self,();
-
-=head2 get_state_observers($self,
-
- get_state_observers($self,();
-
-=head2 get_workflow($self,
-
- get_workflow($self,();
-
-Get the entire workflow as a hashref
-
-
-=head2 load($self)
-
- load($self)();
-
-Load the data into the object
-
 
 
 =head1 AUTHOR

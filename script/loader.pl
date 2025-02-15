@@ -10,7 +10,7 @@ sub test_load() {
     );
 
     $loader->load();
-    print $loader->error() .'\n';
+    print $loader->error() .'\n' if $loader->error();
 
     return 1;
 }
